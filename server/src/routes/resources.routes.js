@@ -1,0 +1,5 @@
+import { Router } from 'express'; import { body } from 'express-validator'; import { protect } from '../middlewares/auth.middleware.js'; import { validate } from '../middlewares/validate.middleware.js'; import * as controller from '../controllers/resource.controller.js';
+const make = (resource, rules) => { const router = Router(); router.use(protect); router.route('/').get(controller.list(resource)).post(rules, controller.create(resource)); router.route('/:id').patch(rules, controller.update(resource)).delete(controller.remove(resource)); return router; };
+export const walletRoutes = make('wallets', [body('name').trim().notEmpty(), body('type').optional().isIn(['cash', 'bank', 'card', 'digital']), body('balance').optional().isFloat(), validate]);
+export const goalRoutes = make('goals', [body('name').trim().notEmpty(), body('targetAmount').isFloat({ gt: 0 }), body('currentAmount').optional().isFloat({ min: 0 }), validate]);
+export const loanRoutes = make('loans', [body('name').trim().notEmpty(), body('principal').isFloat({ gt: 0 }), body('outstanding').isFloat({ min: 0 }), validate]);

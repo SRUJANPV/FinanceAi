@@ -1,0 +1,4 @@
+import { Notification } from '../models/Notification.js'; import { AppError } from '../utils/AppError.js';
+export async function listNotifications(req, res) { const notifications = await Notification.find({ user: req.user.id }).sort({ createdAt: -1 }).limit(50); res.json({ success: true, data: { notifications, unread: notifications.filter((n) => !n.readAt).length } }); }
+export async function readNotification(req, res) { const notification = await Notification.findOneAndUpdate({ _id: req.params.id, user: req.user.id }, { readAt: new Date() }, { new: true }); if (!notification) throw new AppError('Notification not found.', 404); res.json({ success: true, data: { notification } }); }
+export async function readAllNotifications(req, res) { await Notification.updateMany({ user: req.user.id, readAt: null }, { readAt: new Date() }); res.status(204).send(); }

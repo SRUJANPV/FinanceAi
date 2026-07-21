@@ -1,0 +1,16 @@
+import { Router } from 'express';
+import { body } from 'express-validator';
+import * as controller from '../controllers/auth.controller.js';
+import { protect } from '../middlewares/auth.middleware.js';
+import { validate } from '../middlewares/validate.middleware.js';
+const router = Router();
+const asyncHandler = (fn) => (req, res, next) => Promise.resolve().then(() => fn(req, res, next)).catch(next);
+const password = body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters.');
+router.post('/register', [body('name').trim().isLength({ min: 2 }).withMessage('Name must be at least 2 characters.'), body('email').isEmail().normalizeEmail().withMessage('Enter a valid email.'), password, validate], asyncHandler(controller.register));
+router.post('/login', [body('email').isEmail().normalizeEmail(), body('password').notEmpty(), validate], asyncHandler(controller.login));
+router.post('/refresh', asyncHandler(controller.refresh)); router.post('/logout', asyncHandler(controller.logout));
+router.post('/verify-email', [body('token').isHexadecimal().isLength({ min: 64, max: 64 }), validate], asyncHandler(controller.verifyEmail));
+router.post('/forgot-password', [body('email').isEmail().normalizeEmail(), validate], asyncHandler(controller.forgotPassword));
+router.post('/reset-password', [body('token').isHexadecimal().isLength({ min: 64, max: 64 }), password, validate], asyncHandler(controller.resetPassword));
+router.get('/me', protect, asyncHandler(controller.me)); router.patch('/me', protect, [body('name').optional().trim().isLength({ min: 2 }), body('currency').optional().isLength({ min: 3, max: 3 }), validate], asyncHandler(controller.updateProfile));
+export default router;

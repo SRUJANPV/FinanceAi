@@ -1,0 +1,3 @@
+import mongoose from 'mongoose';
+const loanSchema = new mongoose.Schema({ user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true }, name: { type: String, required: true, trim: true }, lender: { type: String, trim: true }, principal: { type: Number, required: true, min: 1 }, outstanding: { type: Number, required: true, min: 0 }, interestRate: { type: Number, min: 0, default: 0 }, emiAmount: { type: Number, min: 0, default: 0 }, nextDueDate: Date, frequency: { type: String, enum: ['monthly', 'weekly'], default: 'monthly' }, status: { type: String, enum: ['active', 'paid'], default: 'active' } }, { timestamps: true });
+export const Loan = mongoose.model('Loan', loanSchema);

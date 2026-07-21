@@ -1,0 +1,3 @@
+import mongoose from 'mongoose';
+const billSchema = new mongoose.Schema({ user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true }, name: { type: String, required: true, trim: true }, amount: { type: Number, required: true, min: 0.01 }, dueDate: { type: Date, required: true }, frequency: { type: String, enum: ['weekly', 'monthly', 'yearly'], default: 'monthly' }, category: { type: String, default: 'Utilities' }, reminderDays: { type: Number, default: 3, min: 0, max: 30 }, active: { type: Boolean, default: true }, lastRemindedAt: Date }, { timestamps: true });
+export const Bill = mongoose.model('Bill', billSchema);
