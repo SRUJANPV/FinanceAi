@@ -1,2 +1,27 @@
-@tailwind base; @tailwind components; @tailwind utilities;
-@layer base { html { font-family: Inter, ui-sans-serif, system-ui, sans-serif; } body { @apply m-0 antialiased; } * { @apply box-border; } button, input { font: inherit; } }
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif; }
+  body { @apply m-0 min-w-[320px] bg-[#f7f8fc] text-slate-900 antialiased; }
+  * { @apply box-border; }
+  button, input, select { font: inherit; }
+  button { @apply transition duration-200; }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { @apply outline-none ring-4 ring-brand-500/20; }
+  h1, h2, h3 { font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif; }
+  ::selection { @apply bg-brand-500/20 text-brand-600; }
+}
+
+@layer components {
+  .page-title { @apply text-3xl font-extrabold tracking-[-0.04em] text-slate-900 sm:text-4xl dark:text-white; }
+  .page-kicker { @apply text-sm font-medium text-slate-500 dark:text-slate-400; }
+  .app-card { @apply rounded-2xl border border-slate-200/70 bg-white shadow-[0_1px_3px_rgba(15,23,42,0.03),0_10px_30px_rgba(15,23,42,0.025)] dark:border-white/10 dark:bg-slate-900; }
+  .btn-primary { @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white shadow-glow hover:-translate-y-0.5 hover:bg-brand-600 active:translate-y-0 disabled:pointer-events-none disabled:opacity-60; }
+  .btn-secondary { @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600 dark:border-white/10 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-white/5; }
+  .form-control { @apply mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white; }
+}
+
+@media (max-width: 640px) { .page-title { font-size: 1.875rem; } }
