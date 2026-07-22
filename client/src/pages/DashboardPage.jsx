@@ -6,11 +6,11 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { api } from '../lib/api';
-
-const format = (amount) =>
-  new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount || 0);
+import { useCurrency } from '../context/CurrencyContext';
 
 export default function DashboardPage() {
+  const { formatMoney } = useCurrency();
+
   const { data, isLoading } = useQuery({
     queryKey: ['dashboard'],
     queryFn: () => api.get('/dashboard').then((r) => r.data.data)
@@ -24,7 +24,7 @@ export default function DashboardPage() {
   const cards = [
     {
       label: 'Total Balance',
-      value: data ? format(data.totalBalance || 248920) : '₹2,48,920',
+      value: data ? formatMoney(data.totalBalance || 248920) : formatMoney(248920),
       icon: Wallet,
       change: data ? `${data.budgetCount || 4} active budgets` : '4 active budgets',
       badge: '+12.4% vs last month',
@@ -32,7 +32,7 @@ export default function DashboardPage() {
     },
     {
       label: 'Monthly Income',
-      value: data ? format(data.monthlyIncome || 125000) : '₹1,25,000',
+      value: data ? formatMoney(data.monthlyIncome || 125000) : formatMoney(125000),
       icon: ArrowUpRight,
       change: 'Verified salary deposit',
       badge: 'On Track',
@@ -40,7 +40,7 @@ export default function DashboardPage() {
     },
     {
       label: 'Monthly Expenses',
-      value: data ? format(data.monthlyExpenses || 48250) : '₹48,250',
+      value: data ? formatMoney(data.monthlyExpenses || 48250) : formatMoney(48250),
       icon: ArrowDownRight,
       change: '38.6% of income',
       badge: 'Controlled',
@@ -55,6 +55,7 @@ export default function DashboardPage() {
       accent: 'text-indigo-500'
     }
   ];
+
 
   const defaultInsights = [
     {
@@ -95,7 +96,7 @@ export default function DashboardPage() {
 
         <Link
           to="/ai-advisor"
-          className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-brand-500 via-indigo-600 to-sky-500 px-5 py-3 text-sm font-extrabold text-white shadow-glow transition hover:opacity-95"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand-500 via-indigo-600 to-sky-500 px-5 py-3 text-sm font-extrabold text-white shadow-glow transition hover:opacity-95 sm:w-auto"
         >
           <Bot size={18} />
           <span>Ask AI Advisor</span>
@@ -111,7 +112,7 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
             key={card.label}
-            className="group relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm transition hover:shadow-xl dark:border-white/10 dark:bg-slate-900"
+            className="group relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm transition hover:shadow-xl sm:p-6 dark:border-white/10 dark:bg-slate-900"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">{card.label}</span>
@@ -135,8 +136,8 @@ export default function DashboardPage() {
       {/* Main Grid: Spending Visual & AI Live Coach Feed */}
       <section className="grid gap-7 lg:grid-cols-3">
         {/* Visual Cash Flow Card */}
-        <article className="rounded-3xl border border-slate-200/80 bg-white p-7 shadow-xl lg:col-span-2 dark:border-white/10 dark:bg-slate-900">
-          <div className="flex items-center justify-between">
+        <article className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-xl sm:p-7 lg:col-span-2 dark:border-white/10 dark:bg-slate-900">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-lg font-bold text-slate-900 dark:text-white">Monthly Cash Flow Trend</h2>
               <p className="text-xs text-slate-400">Income vs Expenses over recent periods</p>
@@ -171,7 +172,7 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          <div className="mt-5 flex items-center justify-between text-xs font-semibold text-slate-500 border-t border-slate-100 pt-4 dark:border-white/10">
+          <div className="mt-5 flex flex-col items-start justify-between gap-3 border-t border-slate-100 pt-4 text-xs font-semibold text-slate-500 sm:flex-row sm:items-center dark:border-white/10">
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded-full bg-emerald-500" /> Income</span>
               <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded-full bg-rose-500" /> Expenses</span>
@@ -183,7 +184,7 @@ export default function DashboardPage() {
         </article>
 
         {/* AI Live Intelligence Feed */}
-        <article className="rounded-3xl border border-indigo-500/20 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-7 text-white shadow-2xl relative overflow-hidden flex flex-col justify-between">
+        <article className="relative flex flex-col justify-between overflow-hidden rounded-3xl border border-indigo-500/20 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-5 text-white shadow-2xl sm:p-7">
           <div className="absolute -right-12 -top-12 h-44 w-44 rounded-full bg-brand-500/20 blur-2xl" />
 
           <div>
@@ -215,7 +216,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+          <div className="mt-6 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center">
             <span className="text-xs text-slate-400">Have a custom question?</span>
             <Link
               to="/ai-advisor"
@@ -229,4 +230,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

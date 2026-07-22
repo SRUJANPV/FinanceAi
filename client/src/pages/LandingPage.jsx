@@ -30,7 +30,7 @@ export default function LandingPage() {
       <Nav open={mobileOpen} setOpen={setMobileOpen} />
 
       {/* Hero Section */}
-      <section className="relative isolate overflow-hidden px-6 pt-12 pb-24 lg:pt-20 lg:pb-32">
+      <section className="relative isolate overflow-hidden px-5 pb-20 pt-10 sm:px-6 sm:pt-12 sm:pb-24 lg:pt-20 lg:pb-32">
         {/* Background Radial Lights & Grids */}
         <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[600px] w-[1000px] -translate-x-1/2 rounded-full bg-gradient-to-tr from-brand-500/25 via-indigo-500/20 to-sky-500/10 blur-[130px]" />
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(to_right,#1e293b15_1px,transparent_1px),linear-gradient(to_bottom,#1e293b15_1px,transparent_1px)] bg-[size:4rem_4rem]" />
@@ -52,7 +52,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="mt-6 text-5xl font-black leading-[1.05] tracking-tight sm:text-6xl xl:text-7xl"
+                className="mt-6 text-4xl font-black leading-[1.05] tracking-tight sm:text-6xl xl:text-7xl"
               >
                 Master your money with{' '}
                 <span className="bg-gradient-to-r from-brand-400 via-sky-300 to-emerald-400 bg-clip-text text-transparent">
@@ -64,7 +64,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="mt-6 text-lg leading-8 text-slate-300 font-normal"
+                className="mt-5 text-base leading-7 text-slate-300 font-normal sm:mt-6 sm:text-lg sm:leading-8"
               >
                 SmartSpend AI aggregates your accounts, parses receipts with high-precision OCR, and delivers real-time wealth coaching. Total financial clarity in one beautiful interface.
               </motion.p>
@@ -229,7 +229,8 @@ export default function LandingPage() {
 
 function Nav({ open, setOpen }) {
   return (
-    <nav className="relative z-30 mx-auto flex h-24 max-w-7xl items-center justify-between px-6">
+    <>
+    <nav className="relative z-30 mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:h-24 sm:px-6">
       <Brand />
       <div className="hidden items-center gap-9 md:flex">
         {navItems.map(([label, href]) => (
@@ -253,6 +254,22 @@ function Nav({ open, setOpen }) {
         {open ? <X /> : <Menu />}
       </button>
     </nav>
+    {open && (
+      <div className="absolute inset-x-4 top-16 z-40 rounded-2xl border border-slate-700 bg-slate-900/95 p-3 shadow-2xl backdrop-blur md:hidden">
+        <div className="space-y-1">
+          {navItems.map(([label, href]) => (
+            <a key={label} href={href} onClick={() => setOpen(false)} className="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-200 hover:bg-slate-800">
+              {label}
+            </a>
+          ))}
+        </div>
+        <div className="mt-3 grid grid-cols-2 gap-2 border-t border-slate-800 pt-3">
+          <Link to="/login" onClick={() => setOpen(false)} className="rounded-xl px-4 py-3 text-center text-sm font-semibold text-slate-200 hover:bg-slate-800">Log in</Link>
+          <Link to="/register" onClick={() => setOpen(false)} className="rounded-xl bg-brand-500 px-4 py-3 text-center text-sm font-bold text-white">Get Started</Link>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
 

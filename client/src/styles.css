@@ -6,7 +6,7 @@
 
 @layer base {
   html { font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif; }
-  body { @apply m-0 min-w-[320px] bg-[#f7f8fc] text-slate-900 antialiased; }
+  body { @apply m-0 min-w-[320px] overflow-x-hidden bg-[#f7f8fc] text-slate-900 antialiased; }
   * { @apply box-border; }
   button, input, select { font: inherit; }
   button { @apply transition duration-200; }
@@ -24,4 +24,9 @@
   .form-control { @apply mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white; }
 }
 
-@media (max-width: 640px) { .page-title { font-size: 1.875rem; } }
+@media (max-width: 640px) {
+  .page-title { font-size: 1.875rem; }
+  table { min-width: 620px; }
+  div:has(> table) { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .fixed.inset-0 > form { max-height: calc(100dvh - 2rem); overflow-y: auto; }
+}
