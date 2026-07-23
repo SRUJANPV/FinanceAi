@@ -24,61 +24,40 @@ export default function DashboardPage() {
   const cards = [
     {
       label: 'Total Balance',
-      value: data ? formatMoney(data.totalBalance || 248920) : formatMoney(248920),
+      value: formatMoney(data?.totalBalance ?? 0),
       icon: Wallet,
-      change: data ? `${data.budgetCount || 4} active budgets` : '4 active budgets',
-      badge: '+12.4% vs last month',
+      change: `${data?.budgetCount ?? 0} active budgets`,
+      badge: data ? '+12.4% vs last month' : 'No data yet',
       accent: 'text-brand-500'
     },
     {
       label: 'Monthly Income',
-      value: data ? formatMoney(data.monthlyIncome || 125000) : formatMoney(125000),
+      value: formatMoney(data?.monthlyIncome ?? 0),
       icon: ArrowUpRight,
-      change: 'Verified salary deposit',
-      badge: 'On Track',
+      change: data?.monthlyIncome ? 'Verified salary deposit' : 'Add income transactions',
+      badge: data?.monthlyIncome ? 'On Track' : 'Set up income',
       accent: 'text-emerald-500'
     },
     {
       label: 'Monthly Expenses',
-      value: data ? formatMoney(data.monthlyExpenses || 48250) : formatMoney(48250),
+      value: formatMoney(data?.monthlyExpenses ?? 0),
       icon: ArrowDownRight,
-      change: '38.6% of income',
-      badge: 'Controlled',
+      change: data?.monthlyIncome ? `${((data.monthlyExpenses / data.monthlyIncome) * 100).toFixed(1)}% of income` : 'No expenses yet',
+      badge: data?.monthlyExpenses ? 'Tracked' : 'No data yet',
       accent: 'text-rose-500'
     },
     {
       label: 'AI Financial Score',
-      value: data?.financialScore ? `${data.financialScore}/100` : '86 / 100',
+      value: data?.financialScore ? `${data.financialScore}/100` : '— / 100',
       icon: BrainCircuit,
-      change: 'Exemplary savings rate',
-      badge: 'Top 5%',
+      change: data?.financialScore ? 'Based on your activity' : 'Add transactions to score',
+      badge: data?.financialScore ? 'Computed' : 'Pending',
       accent: 'text-indigo-500'
     }
   ];
 
 
-  const defaultInsights = [
-    {
-      type: 'saving',
-      severity: 'info',
-      title: 'Food & Dining Optimization',
-      message: 'This month, Food & dining accounts for ₹18,400. Cutting 10% here will add ₹1,840 to your emergency fund.'
-    },
-    {
-      type: 'alert',
-      severity: 'warning',
-      title: 'Shopping Budget Warning',
-      message: 'You have reached 82% of your monthly Shopping budget limit with 12 days remaining.'
-    },
-    {
-      type: 'budget',
-      severity: 'success',
-      title: 'Savings Goal Progress',
-      message: 'Emergency fund is 62.5% funded. On track to reach target by October 2026!'
-    }
-  ];
-
-  const displayInsights = (aiInsights && aiInsights.length > 0) ? aiInsights : defaultInsights;
+  const displayInsights = (aiInsights && aiInsights.length > 0) ? aiInsights : [];
 
   return (
     <div className="space-y-8">
@@ -148,28 +127,34 @@ export default function DashboardPage() {
           </div>
 
           <div className="mt-6 flex h-48 items-end gap-3 rounded-2xl bg-slate-50/60 p-4 dark:bg-slate-800/40">
-            {[
-              { label: 'Week 1', income: 125000, expense: 12400 },
-              { label: 'Week 2', income: 0, expense: 14800 },
-              { label: 'Week 3', income: 15000, expense: 9200 },
-              { label: 'Week 4', income: 0, expense: 11850 }
-            ].map((bar, i) => (
-              <div key={i} className="flex flex-1 flex-col items-center gap-2 h-full justify-end">
-                <div className="w-full flex items-end justify-center gap-1.5 h-36">
-                  <div
-                    style={{ height: `${(bar.income / 125000) * 100}%` }}
-                    className="w-1/2 rounded-t-lg bg-gradient-to-t from-emerald-500 to-teal-400 transition-all hover:brightness-110"
-                    title={`Income: ₹${bar.income.toLocaleString()}`}
-                  />
-                  <div
-                    style={{ height: `${(bar.expense / 20000) * 100}%` }}
-                    className="w-1/2 rounded-t-lg bg-gradient-to-t from-rose-500 to-pink-400 transition-all hover:brightness-110"
-                    title={`Expense: ₹${bar.expense.toLocaleString()}`}
-                  />
-                </div>
-                <span className="text-[11px] font-semibold text-slate-400">{bar.label}</span>
+            {data?.weeklyTrend && data.weeklyTrend.length > 0 ? (
+              data.weeklyTrend.map((bar, i) => {
+                const maxIncome = Math.max(...data.weeklyTrend.map((b) => b.income), 1);
+                const maxExpense = Math.max(...data.weeklyTrend.map((b) => b.expense), 1);
+                return (
+                  <div key={i} className="flex flex-1 flex-col items-center gap-2 h-full justify-end">
+                    <div className="w-full flex items-end justify-center gap-1.5 h-36">
+                      <div
+                        style={{ height: `${(bar.income / maxIncome) * 100}%` }}
+                        className="w-1/2 rounded-t-lg bg-gradient-to-t from-emerald-500 to-teal-400 transition-all hover:brightness-110"
+                        title={`Income: ₹${bar.income.toLocaleString()}`}
+                      />
+                      <div
+                        style={{ height: `${(bar.expense / maxExpense) * 100}%` }}
+                        className="w-1/2 rounded-t-lg bg-gradient-to-t from-rose-500 to-pink-400 transition-all hover:brightness-110"
+                        title={`Expense: ₹${bar.expense.toLocaleString()}`}
+                      />
+                    </div>
+                    <span className="text-[11px] font-semibold text-slate-400">{bar.label}</span>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="flex w-full flex-col items-center justify-center gap-2 text-slate-400">
+                <TrendingUp size={32} className="opacity-30" />
+                <p className="text-xs font-semibold">Add transactions to see your cash flow chart</p>
               </div>
-            ))}
+            )}
           </div>
 
           <div className="mt-5 flex flex-col items-start justify-between gap-3 border-t border-slate-100 pt-4 text-xs font-semibold text-slate-500 sm:flex-row sm:items-center dark:border-white/10">
@@ -201,7 +186,7 @@ export default function DashboardPage() {
             <h3 className="mt-4 text-xl font-extrabold leading-snug">Personalized Financial Insights</h3>
 
             <div className="mt-5 space-y-3">
-              {displayInsights.map((insight, idx) => (
+              {displayInsights.length > 0 ? displayInsights.map((insight, idx) => (
                 <div
                   key={idx}
                   className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-md transition hover:bg-white/15"
@@ -212,7 +197,12 @@ export default function DashboardPage() {
                   </p>
                   <p className="mt-1.5 text-xs leading-relaxed text-slate-200">{insight.message}</p>
                 </div>
-              ))}
+              )) : (
+                <div className="rounded-2xl border border-white/10 bg-white/10 p-4 text-center text-xs text-slate-400">
+                  <Sparkles size={20} className="mx-auto mb-2 opacity-40" />
+                  <p>Start adding transactions and the AI will generate personalized insights for you.</p>
+                </div>
+              )}
             </div>
           </div>
 

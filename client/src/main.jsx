@@ -19,7 +19,6 @@ import AiAdvisorPage from './pages/AiAdvisorPage';
 import SubscriptionsPage from './pages/SubscriptionsPage';
 import TransactionsPage from './pages/TransactionsPage';
 import AnalyticsPage from './pages/AnalyticsPage';
-import AccountsPage from './pages/AccountsPage';
 import PlannerPage from './pages/PlannerPage';
 import BudgetsPage from './pages/BudgetsPage';
 import AdminPage from './pages/AdminPage';
@@ -45,8 +44,7 @@ const app = (
                       <Route path="/transactions" element={<TransactionsPage />} />
                       <Route path="/budgets" element={<BudgetsPage />} />
                       <Route path="/analytics" element={<AnalyticsPage />} />
-                      <Route path="/wallets" element={<AccountsPage />} />
-                      <Route path="/accounts" element={<AccountsPage />} />
+                      <Route path="/wallets" element={<PlannerPage resource="wallets" />} />
                       <Route path="/loans" element={<PlannerPage resource="loans" />} />
                       <Route path="/admin" element={<AdminPage />} />
                     </Route>

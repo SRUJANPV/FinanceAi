@@ -219,8 +219,6 @@ export default function PlannerPage({ resource }) {
                 </div>
               )}
 
-              {!isLoan && <p className="mt-4 text-2xl font-bold text-slate-900 dark:text-white">{config.display(item)}</p>}
-
               <button
                 onClick={() => remove.mutate(item._id)}
                 className="absolute right-4 top-4 hidden text-slate-400 hover:text-rose-500"
@@ -367,4 +365,3 @@ function ResourceForm({ resource, close }) {
     </div>
   );
 }
-
